@@ -64,7 +64,7 @@ export default function Read() {
           onClick={() => setProgress(document.progress - 1)}
           disabled={!document.progress || document.progress < 2}
         >
-          Previous
+          {`<`}
         </Button>
 
         <Button
@@ -73,7 +73,7 @@ export default function Read() {
             setProgress(document.progress ? document.progress + 1 : 1)
           }
         >
-          Next
+          {`>`}
         </Button>
         <Button onClick={() => setView("english")}>English</Button>
         <Button onClick={() => setView("simple")}>Simple</Button>
