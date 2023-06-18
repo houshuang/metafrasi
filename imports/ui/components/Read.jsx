@@ -6,6 +6,7 @@ import { Documents } from "/imports/api/documents";
 import { useCodeMirror } from "@uiw/react-codemirror";
 import { useNavigate } from "react-router-dom";
 import { EditorView } from "codemirror";
+import { useSwipeable } from "react-swipeable";
 
 export default function Read() {
   const { documentId } = useParams();
@@ -25,31 +26,50 @@ export default function Read() {
     Meteor.call("documents.setProgress", documentId, value);
   }
 
+  const paragraphs = !isLoading && document.content.split("---%---");
+  const maxProgress = !isLoading && paragraphs.length - 1;
+
+  const handlers = useSwipeable({
+    onSwipedLeft: () => {
+      if (document.progress && document.progress > 2) {
+        setProgress(document.progress - 1);
+      }
+    },
+    onSwipedRight: () => {
+      if (document.progress && document.progress < maxProgress) {
+        setProgress(document.progress + 1);
+      }
+    },
+  });
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
 
-  const paragraphs = document.content.split("---%---");
-  const maxProgress = paragraphs.length - 1;
-
   return (
-    <Page>
-      <Button onClick={() => navigate(`/document/${documentId}`)}>Back</Button>
-      {document.progress && document.progress > 1 && (
-        <Button onClick={() => setProgress(document.progress - 1)}>
+    <div {...handlers} style={{ touchAction: "pan-y" }}>
+      <Page>
+        <Button onClick={() => navigate(`/document/${documentId}`)}>
+          Back
+        </Button>
+        <Button
+          onClick={() => setProgress(document.progress - 1)}
+          disabled={!document.progress || document.progress < 2}
+        >
           Previous
         </Button>
-      )}
-      {(document.progress || 0) < maxProgress && (
+
         <Button
+          disabled={(document.progress || 0) > maxProgress}
           onClick={() =>
             setProgress(document.progress ? document.progress + 1 : 1)
           }
         >
           Next
         </Button>
-      )}
-      <p>{paragraphs[document.progress || 0]}</p>
-    </Page>
+
+        <p>{paragraphs[document.progress || 0]}</p>
+      </Page>
+    </div>
   );
 }
