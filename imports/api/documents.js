@@ -38,4 +38,9 @@ Meteor.methods({
 
     Documents.update(documentId, { $set: { progress: content } });
   },
+  "documents.setGPT"(documentId, content) {
+    check(documentId, String);
+
+    Documents.update(documentId, { $set: { gpt: content } });
+  },
 });

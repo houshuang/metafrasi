@@ -6,6 +6,7 @@ import { Documents } from "/imports/api/documents";
 import { useCodeMirror } from "@uiw/react-codemirror";
 import { useNavigate } from "react-router-dom";
 import { EditorView } from "codemirror";
+import { processDocument } from "../utils/gpt";
 
 function splitIntoParagraphs(text, MIN_SIZE) {
   // split the text into lines
@@ -93,14 +94,29 @@ export default function DocumentDetail() {
 
   return (
     <Page>
-      <Button onClick={() => navigate("/")}>Back</Button>
-      <Button onClick={process}>Process</Button>
-      <Button onClick={() => navigate(`/read/${documentId}`)}>Read</Button>
-      <Input
-        value={document?.title || ""}
-        onInput={(e) => changeTitle(e.target.value)}
-      />
-      <div ref={editor} />
+      <div>
+        <Button onClick={() => navigate("/")}>Back</Button>
+        <Button onClick={process}>Pre-process</Button>
+        <Button onClick={() => processDocument(document.content, documentId)}>
+          Process GPT
+        </Button>
+        <Button onClick={() => navigate(`/read/${documentId}`)}>Read</Button>
+        <div>
+          Title:{" "}
+          <Input
+            value={document?.title || ""}
+            onInput={(e) => changeTitle(e.target.value)}
+          />
+        </div>
+      </div>
+      <div style={{ display: "flex", flexDirection: "row" }}>
+        <div style={{ flex: "1 1 0", width: "0" }}>
+          <div ref={editor} />
+        </div>
+        <div style={{ flex: "1 1 0", width: "0" }}>
+          {document.gpt && <pre>${JSON.stringify(document.gpt, null, 2)} </pre>}
+        </div>
+      </div>
     </Page>
   );
 }
