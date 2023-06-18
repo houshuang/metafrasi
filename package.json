@@ -10,8 +10,10 @@
   "dependencies": {
     "@babel/runtime": "^7.20.7",
     "meteor-node-stubs": "^1.2.5",
+    "onsenui": "^2.12.8",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-onsenui": "^1.13.2"
   },
   "meteor": {
     "mainModule": {
