@@ -1,13 +1,27 @@
-import React from "react";
-import { Hello } from "./Hello.jsx";
-import { Info } from "./Info.jsx";
-import { Page, Button } from "react-onsenui";
-import "onsenui/css/onsenui.css";
 import "onsenui/css/onsen-css-components.css";
+import "onsenui/css/onsenui.css";
 
-export const App = () => (
-  <Page>
-    Hello
-    <Button> Click Me!!</Button>
-  </Page>
-);
+import React from "react";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+
+import AppLayout from "./components/AppLayout";
+import DocumentDetail from "./components/DocumentDetail";
+import DocumentList from "./components/DocumentList";
+import Read from "./components/Read";
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <DocumentList />,
+  },
+  {
+    path: "document/:documentId",
+    element: <DocumentDetail />,
+  },
+  {
+    path: "read/:documentId",
+    element: <Read />,
+  },
+]);
+
+export const App = () => <RouterProvider router={router} />;
