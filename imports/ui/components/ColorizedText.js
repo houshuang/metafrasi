@@ -6,7 +6,7 @@ const ColorizedText = ({ text, phrases }) => {
   const phraseDictionary = new Map(phrases);
 
   const handleClick = (phrase) => {
-    setSelectedPhrase(phraseDictionary.get(phrase));
+    setSelectedPhrase(`${phrase}: ${phraseDictionary.get(phrase)}`);
   };
 
   let processedText = text;
@@ -26,8 +26,9 @@ const ColorizedText = ({ text, phrases }) => {
 
   return (
     <div>
+      <p>{selectedPhrase || "..."}</p>
       {processedText}
-      {selectedPhrase && (
+      {/* {selectedPhrase && (
         <div className="modal">
           <div className="modal-content">
             <span className="close" onClick={() => setSelectedPhrase(null)}>
@@ -36,7 +37,7 @@ const ColorizedText = ({ text, phrases }) => {
             <p>{selectedPhrase}</p>
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 };

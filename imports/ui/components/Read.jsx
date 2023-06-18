@@ -84,20 +84,16 @@ export default function Read() {
           <p>{document.gpt?.[document.progress || 0]?.english}</p>
         )}
         {(view === "simple" || view === "all") && (
-          <p>
-            <ColorizedText
-              text={document.gpt?.[document.progress || 0]?.simplified}
-              phrases={document.phrases}
-            />
-          </p>
+          <ColorizedText
+            text={document.gpt?.[document.progress || 0]?.simplified}
+            phrases={document.phrases}
+          />
         )}
         {(!view || view === "all") && (
-          <p>
-            <ColorizedText
-              text={paragraphs[document.progress || 0]}
-              phrases={document.gpt[document.progress || 0].difficultPhrases}
-            />
-          </p>
+          <ColorizedText
+            text={paragraphs[document.progress || 0]}
+            phrases={document.gpt[document.progress || 0].difficultPhrases}
+          />
         )}
       </Page>
     </div>
