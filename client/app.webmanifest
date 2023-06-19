@@ -1,0 +1,6 @@
+{
+  "name": "Metafrasi",
+  "start_url": "https://metafrasi.eu.meteorapp.com/",
+  "display": "standalone",
+  "scope": "https://metafrasi.eu.meteorapp.com/"
+}
