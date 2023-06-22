@@ -13,6 +13,7 @@ const RenderText = ({ text, phrases }) => {};
 
 export default function Read() {
   const { documentId } = useParams();
+  const [selectedPhrase, setSelectedPhrase] = useState(undefined);
 
   const navigate = useNavigate();
   const [view, setView] = React.useState();
@@ -34,44 +35,32 @@ export default function Read() {
   const paragraphs = !isLoading && document.content.split("---%---");
   const maxProgress = !isLoading && paragraphs.length - 1;
 
-  const handlers = useSwipeable({
-    onTouchStartOrOnMouseDown: (event) => {
-      event.preventDefault();
-    },
-    onSwipedLeft: () => {
-      if (document.progress && document.progress < maxProgress) {
-        setProgress(document.progress + 1);
-      }
-    },
-    onSwipedRight: () => {
-      if (document.progress && document.progress > 2) {
-        setProgress(document.progress - 1);
-      }
-    },
-  });
-
   if (isLoading) {
     return <div>Loading...</div>;
   }
 
+  const current = document.gpt?.[document.progress || 0];
   return (
-    <div {...handlers} style={{ touchAction: "pan-y" }}>
-      <Page>
+    <div>
+      <Page style={{ margin: "5px" }}>
         <Button onClick={() => navigate(`/document/${documentId}`)}>
           Back
         </Button>
         <Button
-          onClick={() => setProgress(document.progress - 1)}
-          disabled={!document.progress || document.progress < 2}
+          onClick={() => {
+            setSelectedPhrase(undefined);
+            setProgress(document.progress - 1);
+          }}
+          disabled={!document.progress || document.progress < 1}
         >
           {`<`}
         </Button>
-
         <Button
-          disabled={(document.progress || 0) > maxProgress}
-          onClick={() =>
-            setProgress(document.progress ? document.progress + 1 : 1)
-          }
+          disabled={(document.progress || 0) > maxProgress - 1}
+          onClick={() => {
+            setSelectedPhrase(undefined);
+            setProgress(document.progress ? document.progress + 1 : 1);
+          }}
         >
           {`>`}
         </Button>
@@ -79,21 +68,54 @@ export default function Read() {
         <Button onClick={() => setView("simple")}>Simple</Button>
         <Button onClick={() => setView(undefined)}>Original</Button>
         <Button onClick={() => setView("all")}>All</Button>
+        {document.progress + 1 || 1} / {maxProgress + 1}
+        {current?.sentences ? (
+          <div>
+            <p>{selectedPhrase || "..."}</p>
 
-        {(view === "english" || view === "all") && (
-          <p>{document.gpt?.[document.progress || 0]?.english}</p>
-        )}
-        {(view === "simple" || view === "all") && (
-          <ColorizedText
-            text={document.gpt?.[document.progress || 0]?.simplified}
-            phrases={document.phrases}
-          />
-        )}
-        {(!view || view === "all") && (
-          <ColorizedText
-            text={paragraphs[document.progress || 0]}
-            phrases={document.gpt[document.progress || 0].difficultPhrases}
-          />
+            {view === "english" && (
+              <p>{current.sentences.map((n) => n[2]).join(" ")}</p>
+            )}
+            {view === "simple" && (
+              <ColorizedText
+                key={document.progress || 0}
+                text={current.sentences.map((n) => n[1]).join(" ")}
+                phrases={current.phrases}
+                setSelectedPhrase={setSelectedPhrase}
+              />
+            )}
+            {!view && (
+              <ColorizedText
+                key={document.progress || 0}
+                text={current.sentences.map((n) => n[0]).join(" ")}
+                phrases={current.phrases}
+                setSelectedPhrase={setSelectedPhrase}
+              />
+            )}
+            {view === "all" &&
+              current.sentences.map((_, i) => {
+                return (
+                  <div style={{ marginBottom: "15px" }}>
+                    <ColorizedText
+                      key={"original" + i}
+                      text={current.sentences[i][0]}
+                      phrases={current.phrases}
+                      setSelectedPhrase={setSelectedPhrase}
+                    />
+                    <ColorizedText
+                      color="green"
+                      key={"simple" + i}
+                      text={current.sentences[i][1]}
+                      phrases={current.phrases}
+                      setSelectedPhrase={setSelectedPhrase}
+                    />
+                    <font color="grey">{current.sentences[i][2]}</font>
+                  </div>
+                );
+              })}
+          </div>
+        ) : (
+          <p>No data</p>
         )}
       </Page>
     </div>

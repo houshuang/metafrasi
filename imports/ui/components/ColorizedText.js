@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import reactStringReplace from "react-string-replace";
 
-const ColorizedText = ({ text, phrases }) => {
-  const [selectedPhrase, setSelectedPhrase] = useState(null);
+const ColorizedText = ({ text, phrases, setSelectedPhrase, color }) => {
   const phraseDictionary = new Map(phrases);
 
   const handleClick = (phrase) => {
@@ -25,19 +24,10 @@ const ColorizedText = ({ text, phrases }) => {
   }
 
   return (
-    <div>
-      <p>{selectedPhrase || "..."}</p>
-      {processedText}
-      {/* {selectedPhrase && (
-        <div className="modal">
-          <div className="modal-content">
-            <span className="close" onClick={() => setSelectedPhrase(null)}>
-              &times;
-            </span>
-            <p>{selectedPhrase}</p>
-          </div>
-        </div>
-      )} */}
+    <div style={{ marginBottom: "5px" }}>
+      <font color={color}>
+        <div>{processedText}</div>
+      </font>
     </div>
   );
 };

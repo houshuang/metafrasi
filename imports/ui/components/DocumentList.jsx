@@ -36,10 +36,22 @@ export default function DocumentList() {
         renderRow={(document) => (
           <ListItem
             key={document._id}
-            onClick={() => navigate(`/document/${document._id}`)}
+            onClick={() =>
+              document?.gpt
+                ? navigate(`/read/${document._id}`)
+                : navigate(`/document/${document._id}`)
+            }
           >
             {document.title}
-            <Button onClick={() => deleteDocument(document._id)}>Delete</Button>
+            <Button
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                deleteDocument(document._id);
+              }}
+            >
+              Delete
+            </Button>
           </ListItem>
         )}
       />
