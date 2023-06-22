@@ -40,7 +40,6 @@ const askAI = async (text, apikey) => {
       method: "post",
       headers,
       stop: ["}"],
-      timeout: 100000,
     });
     console.log(res.data.choices[0].message.content);
 
@@ -70,7 +69,7 @@ export const processDocument = async (text, documentId) => {
   // Process all paragraphs with rate limiting
   while (para.length > 0) {
     // Get a chunk of max 5 paragraphs
-    const chunk = para.splice(0, Math.min(para.length, 5));
+    const chunk = para.splice(0, Math.min(para.length, 4));
 
     // Send all requests in the chunk
     const promises = chunk.map((n) => askAI(prompt(n), apikey));
@@ -81,13 +80,14 @@ export const processDocument = async (text, documentId) => {
       try {
         json.push(JSON.parse(response));
       } catch (e) {
+        console.error(e, response);
         // Handle parsing errors if necessary
       }
     }
 
     // If there are more paragraphs to process, wait for 1 minute
     if (para.length > 0) {
-      await new Promise((resolve) => setTimeout(resolve, 90000));
+      await new Promise((resolve) => setTimeout(resolve, 240000));
     }
   }
 
