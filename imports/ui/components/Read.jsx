@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, memo } from "react";
 import { Page, Input, Button } from "react-onsenui";
 import { useParams } from "react-router-dom";
 import { useTracker } from "meteor/react-meteor-data";
@@ -38,7 +38,7 @@ export default function Read() {
   if (isLoading) {
     return <div>Loading...</div>;
   }
-
+  const ColorizedMemo = memo(ColorizedText);
   const current = document.gpt?.[document.progress || 0];
   return (
     <div>
@@ -77,7 +77,7 @@ export default function Read() {
               <p>{current.sentences.map((n) => n[2]).join(" ")}</p>
             )}
             {view === "simple" && (
-              <ColorizedText
+              <ColorizedMemo
                 key={document.progress || 0}
                 text={current.sentences.map((n) => n[1]).join(" ")}
                 phrases={current.phrases}
@@ -85,7 +85,7 @@ export default function Read() {
               />
             )}
             {!view && (
-              <ColorizedText
+              <ColorizedMemo
                 key={document.progress || 0}
                 text={current.sentences.map((n) => n[0]).join(" ")}
                 phrases={current.phrases}
@@ -96,13 +96,13 @@ export default function Read() {
               current.sentences.map((_, i) => {
                 return (
                   <div style={{ marginBottom: "15px" }}>
-                    <ColorizedText
+                    <ColorizedMemo
                       key={"original" + i}
                       text={current.sentences[i][0]}
                       phrases={current.phrases}
                       setSelectedPhrase={setSelectedPhrase}
                     />
-                    <ColorizedText
+                    <ColorizedMemo
                       color="green"
                       key={"simple" + i}
                       text={current.sentences[i][1]}

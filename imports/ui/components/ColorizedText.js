@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import reactStringReplace from "react-string-replace";
 
 const ColorizedText = ({ text, phrases, setSelectedPhrase, color }) => {
+  console.log("render");
   const phraseDictionary = new Map(phrases);
 
   const handleClick = (phrase) => {
