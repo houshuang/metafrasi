@@ -1,6 +1,6 @@
 export function splitStringIntoFlexibleSentences(text, minLength, maxLength) {
   // Split the text into sentences
-  const sentences = text.match(/[^\.!\?]+[\.!\?]+/g) || [text, ""];
+  const sentences = text.split(" ").map((word) => word + " ");
   let currentSplit = "";
   let splitText = [];
 
